@@ -1,13 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login - Booking System</title>
+  <meta charset="UTF-8">
+  <title>KW Living Realty Intranet</title>
   <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
   <script src="msalconfig.js"></script>
   <script src="auth.js" defer></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f7f7f7;
+    }
+    .message {
+      font-size: 1.2rem;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h2>Welcome to the Booking System</h2>
-  <button onclick="signIn()">Login with Office 365</button>
+  <div class="message">🔐 Please wait... checking login status</div>
 </body>
 </html>
