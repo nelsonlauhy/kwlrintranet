@@ -60,7 +60,8 @@
         document.getElementById("profileFirstName").textContent = firstName;
         document.getElementById("profileLastName").textContent = lastName;
         document.getElementById("profileEmail").textContent = userData.username || "";
-        document.getElementById("profileTitle").textContent = "Staff";
+        document.getElementById("profileJobTitle").textContent = sessionStorage.getItem("jobTitle") || "—";
+
       });
   </script>
 
