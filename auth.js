@@ -1,22 +1,30 @@
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-// Automatically check login state on page load
+// Try to handle redirect response (if coming back from login)
 msalInstance.handleRedirectPromise()
   .then((response) => {
     if (response) {
-      // Successful login with redirect
       sessionStorage.setItem("user", JSON.stringify(response.account));
       window.location.href = "dashboard.html";
     } else {
-      const accounts = msalInstance.getAllAccounts();
-      if (accounts.length > 0) {
-        // Already signed in
-        sessionStorage.setItem("user", JSON.stringify(accounts[0]));
+      const currentAccounts = msalInstance.getAllAccounts();
+      if (currentAccounts.length > 0) {
+        sessionStorage.setItem("user", JSON.stringify(currentAccounts[0]));
         window.location.href = "dashboard.html";
       } else {
-        // ❗Not signed in → auto-trigger login
-        msalInstance.loginRedirect({
-          scopes: ["user.read"]
+        // Try silent SSO first
+        msalInstance.ssoSilent({
+          scopes: ["user.read"],
+          loginHint: "", // Optional: prefill known email
+        }).then((ssoResponse) => {
+          sessionStorage.setItem("user", JSON.stringify(ssoResponse.account));
+          window.location.href = "dashboard.html";
+        }).catch((error) => {
+          // If silent SSO fails (e.g., no session), fallback to redirect login
+          console.warn("Silent SSO failed, redirecting:", error);
+          msalInstance.loginRedirect({
+            scopes: ["user.read"]
+          });
         });
       }
     }
