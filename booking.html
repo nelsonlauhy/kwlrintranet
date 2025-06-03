@@ -158,27 +158,29 @@
     }
 
     function loadMeetingRooms() {
-      const roomButtonsContainer = document.getElementById('room-buttons');
-      db.collection("meetingroomlist").orderBy("displayorder").get().then(snapshot => {
-        roomButtonsContainer.innerHTML = '';
-        snapshot.forEach((doc, index) => {
-          const roomName = doc.data().name;
-          const btn = document.createElement("button");
-          btn.className = "list-group-item list-group-item-action";
-          if (roomName === "Living Room") {
-            btn.classList.add("active");
-            currentRoom = roomName;
-        }
-          btn.textContent = roomName;
-          btn.onclick = () => selectRoom(roomName);
-          roomButtonsContainer.appendChild(btn);
-        });
+        const roomButtonsContainer = document.getElementById('room-buttons');
+        db.collection("meetingroomlist").orderBy("displayorder").get().then(async snapshot => {
+            roomButtonsContainer.innerHTML = '';
 
-        if (calendar) {
-          selectRoom(currentRoom); // Trigger default room loading
-        }
-      });
+            let firstRoom = null;
+
+            snapshot.forEach((doc, index) => {
+            const roomName = doc.data().name;
+            const btn = document.createElement("button");
+            btn.className = "list-group-item list-group-item-action";
+            btn.textContent = roomName;
+            btn.onclick = () => selectRoom(roomName);
+            roomButtonsContainer.appendChild(btn);
+
+            if (index === 0) firstRoom = roomName;
+            });
+
+            if (firstRoom && calendar) {
+            await selectRoom(firstRoom);
+            }
+        });
     }
+
 
     document.addEventListener('DOMContentLoaded', async function () {
       const calendarEl = document.getElementById('calendar');
