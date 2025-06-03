@@ -215,28 +215,36 @@
         editable: false,
         events: [],
         eventContent: function(arg) {
-          const wrapper = document.createElement('div');
+            const wrapper = document.createElement('div');
+            wrapper.style.display = "flex";
+            wrapper.style.alignItems = "center";
 
-          const titleEl = document.createElement('div');
-          titleEl.innerText = arg.event.title;
-          wrapper.appendChild(titleEl);
+            // Format time (e.g., 10:00 AM)
+            const timeStr = arg.timeText ? `${arg.timeText} ` : "";
 
-          const code = arg.event.extendedProps.companyCode;
-          if (code) {
-            const tagEl = document.createElement('span');
-            tagEl.innerText = code;
-            tagEl.style.backgroundColor = "#6c757d";
-            tagEl.style.color = "white";
-            tagEl.style.fontSize = "10px";
-            tagEl.style.borderRadius = "4px";
-            tagEl.style.padding = "1px 4px";
-            tagEl.style.marginLeft = "4px";
-            tagEl.style.display = "inline-block";
-            wrapper.appendChild(tagEl);
-          }
+            // Main text
+            const textEl = document.createElement('span');
+            textEl.innerText = timeStr + arg.event.title;
+            wrapper.appendChild(textEl);
 
-          return { domNodes: [wrapper] };
-        }
+            // Tag
+            const code = arg.event.extendedProps.companyCode;
+            if (code) {
+                const tagEl = document.createElement('span');
+                tagEl.innerText = code;
+                tagEl.style.backgroundColor = "#6c757d";
+                tagEl.style.color = "white";
+                tagEl.style.fontSize = "10px";
+                tagEl.style.borderRadius = "4px";
+                tagEl.style.padding = "1px 4px";
+                tagEl.style.marginLeft = "6px";
+                tagEl.style.display = "inline-block";
+                wrapper.appendChild(tagEl);
+            }
+
+            return { domNodes: [wrapper] };
+            }
+
       });
       calendar.render();
       loadMeetingRooms();
