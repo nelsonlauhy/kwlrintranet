@@ -1,0 +1,48 @@
+<h2 class="mb-3">Meeting Room Booking</h2>
+
+<div class="alert alert-info">
+  Select a date and time slot to reserve a meeting room.
+</div>
+
+<!-- Placeholder for booking system (e.g., calendar or form) -->
+<div class="card mb-4">
+  <div class="card-body">
+    <form>
+      <div class="mb-3 row">
+        <label for="room" class="col-sm-2 col-form-label">Room</label>
+        <div class="col-sm-10">
+          <select class="form-select" id="room">
+            <option selected disabled>Choose...</option>
+            <option>Room A</option>
+            <option>Room B</option>
+            <option>Room C</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="date" class="col-sm-2 col-form-label">Date</label>
+        <div class="col-sm-4">
+          <input type="date" class="form-control" id="date">
+        </div>
+
+        <label for="time" class="col-sm-2 col-form-label">Time</label>
+        <div class="col-sm-4">
+          <input type="time" class="form-control" id="time">
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="notes" class="col-sm-2 col-form-label">Notes</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" id="notes" rows="2" placeholder="Optional..."></textarea>
+        </div>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary">Book Room</button>
+      </div>
+    </form>
+  </div>
+</div>
+
