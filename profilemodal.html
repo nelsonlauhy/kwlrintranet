@@ -1,6 +1,6 @@
 <!-- Profile Modal -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
+  <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
@@ -11,10 +11,28 @@
              class="rounded-circle bg-secondary text-white mx-auto mb-3 d-flex align-items-center justify-content-center fw-bold"
              style="width: 60px; height: 60px; font-size: 1.2rem;">
         </div>
-        <p class="mb-1"><strong>First Name:</strong> <span id="profileFirstName"></span></p>
-        <p class="mb-1"><strong>Last Name:</strong> <span id="profileLastName"></span></p>
-        <p class="mb-1"><strong>Email:</strong> <span id="profileEmail"></span></p>
-        <p class="mb-0"><strong>Job Title:</strong> <span id="profileJobTitle"></span></p>
+        <div class="d-flex justify-content-center">
+          <table class="table table-borderless w-auto text-start">
+            <tbody>
+              <tr>
+                <th scope="row">First Name:</th>
+                <td id="profileFirstName"></td>
+              </tr>
+              <tr>
+                <th scope="row">Last Name:</th>
+                <td id="profileLastName"></td>
+              </tr>
+              <tr>
+                <th scope="row">Email:</th>
+                <td id="profileEmail"></td>
+              </tr>
+              <tr>
+                <th scope="row">Job Title:</th>
+                <td id="profileJobTitle"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
