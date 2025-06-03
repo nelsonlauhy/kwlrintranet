@@ -126,22 +126,23 @@
       });
 
     async function getRoomEvents(room) {
-      const snapshot = await db.collection("roomevents")
-        .where("roomName", "==", room)
-        .orderBy("start")
-        .get();
+        const snapshot = await db.collection("roomevents")
+            .where("roomName", "==", room)
+            .orderBy("start")
+            .get();
 
-      const events = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          title: data.title,
-          start: data.start.toDate(),
-          end: data.end.toDate()
-        };
-      });
+        const events = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+            title: data.title,
+            start: data.start.toDate(),
+            end: data.end.toDate()
+            };
+        });
 
-      return events;
-    }
+        console.log("Loaded events for", room, events);  // <-- Add this
+        return events;
+        }
 
     async function selectRoom(roomName) {
       currentRoom = roomName;
@@ -164,10 +165,10 @@
           const roomName = doc.data().name;
           const btn = document.createElement("button");
           btn.className = "list-group-item list-group-item-action";
-          if (index === 0) {
+          if (roomName === "Living Room") {
             btn.classList.add("active");
             currentRoom = roomName;
-          }
+        }
           btn.textContent = roomName;
           btn.onclick = () => selectRoom(roomName);
           roomButtonsContainer.appendChild(btn);
