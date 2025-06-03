@@ -10,11 +10,8 @@
   <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
   <script src="msalconfig.js"></script>
   <script>
-    // Redirect to login if not authenticated
     const user = sessionStorage.getItem("user");
-    if (!user) {
-      window.location.href = "index.html";
-    }
+    if (!user) window.location.href = "index.html";
   </script>
   <style>
     body {
@@ -25,29 +22,31 @@
 </head>
 <body>
 
-  <!-- Navbar placeholder -->
+  <!-- Navbar and Modal Placeholders -->
   <div id="navbar-container"></div>
-
-  <!-- Profile modal placeholder -->
   <div id="profile-modal-container"></div>
 
-  <!-- Page content -->
+  <!-- Dashboard Content -->
   <div class="container mt-4">
     <h2>Welcome to the KW Living Realty Intranet</h2>
     <p>This is your internal dashboard. More features will be added here.</p>
   </div>
 
-  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    const userData = JSON.parse(sessionStorage.getItem("user"));
+    const [firstName = '', lastName = ''] = (userData.name || userData.username).split(' ');
+    const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+
     // Load navbar
     fetch('navbar.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('navbar-container').innerHTML = html;
-        const userData = JSON.parse(sessionStorage.getItem("user"));
         document.getElementById("userName").textContent = userData.name || userData.username;
+        document.getElementById("userInitials").textContent = initials;
       });
 
     // Load profile modal
@@ -55,13 +54,11 @@
       .then(res => res.text())
       .then(html => {
         document.getElementById('profile-modal-container').innerHTML = html;
-        const userData = JSON.parse(sessionStorage.getItem("user"));
-        const [firstName = '', lastName = ''] = (userData.name || userData.username).split(' ');
         document.getElementById("profileFirstName").textContent = firstName;
         document.getElementById("profileLastName").textContent = lastName;
         document.getElementById("profileEmail").textContent = userData.username || "";
         document.getElementById("profileJobTitle").textContent = sessionStorage.getItem("jobTitle") || "—";
-
+        document.getElementById("modalInitials").textContent = initials;
       });
   </script>
 
