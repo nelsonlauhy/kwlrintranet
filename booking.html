@@ -20,11 +20,6 @@
   <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
   <script src="msalconfig.js"></script>
 
-  <script>
-    const user = sessionStorage.getItem("user");
-    if (!user) window.location.href = "index.html";
-  </script>
-
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -48,30 +43,17 @@
     .calendar-container {
       padding: 1rem;
     }
-    /* Calendar header title (e.g., "June 2025") */
-    .fc .fc-toolbar-title {
-        color: #343a40; /* dark grey */
-    }
 
-    /* Calendar weekday header (e.g., "Sun", "Mon", etc.) */
-    .fc .fc-col-header-cell-cushion {
-        color: #343a40 !important; /* dark grey */
-    }
-
-    /* Month view: day numbers (1, 2, 3...) */
-    .fc-daygrid-day-number {
-        color: #343a40 !important;
-    }
-
-    /* Month view: event title text */
+    /* Calendar color overrides */
+    .fc .fc-toolbar-title,
+    .fc .fc-col-header-cell-cushion,
+    .fc-daygrid-day-number,
     .fc-daygrid-event .fc-event-title {
-        color: #343a40 !important;
+      color: #343a40 !important;
     }
 
-    /* Remove underlines or links for events */
-    .fc-event-title,
     .fc-event-title a {
-        text-decoration: none !important;
+      text-decoration: none !important;
     }
   </style>
 </head>
@@ -113,7 +95,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Color mapping for rooms
     const roomColorMap = {
       "Training Area": "#007bff",
       "Living Room": "#28a745",
@@ -164,23 +145,23 @@
       }
 
       const snapshot = await query.get();
-      const events = snapshot.docs.map(doc => {
+      return snapshot.docs.map(doc => {
         const data = doc.data();
         return {
           title: room === "ALL" ? `[${data.roomName}] ${data.title}` : data.title,
           start: data.start.toDate(),
           end: data.end.toDate(),
-          color: roomColorMap[data.roomName] || "#999"
+          color: roomColorMap[data.roomName] || "#999",
+          extendedProps: {
+            companyCode: data.companyCode || "",
+            eventDescription: data.eventDescription || ""
+          }
         };
       });
-
-      console.log(`Loaded events for ${room}`, events);
-      return events;
     }
 
     async function selectRoom(roomName) {
       currentRoom = roomName;
-
       const buttons = document.querySelectorAll('.list-group-item');
       buttons.forEach(btn => btn.classList.remove('active'));
       const activeBtn = Array.from(buttons).find(btn => btn.textContent.includes(roomName));
@@ -196,13 +177,11 @@
       db.collection("meetingroomlist").orderBy("displayorder").get().then(async snapshot => {
         roomButtonsContainer.innerHTML = '';
 
-        // Add "ALL" button
         const allBtn = document.createElement("button");
         allBtn.className = "list-group-item list-group-item-action active";
         allBtn.textContent = "ALL";
         allBtn.onclick = () => selectRoom("ALL");
         roomButtonsContainer.appendChild(allBtn);
-
         currentRoom = "ALL";
 
         snapshot.forEach(doc => {
@@ -217,7 +196,7 @@
 
         if (calendar) {
           await selectRoom("ALL");
-        }  
+        }
       });
     }
 
@@ -234,10 +213,32 @@
         nowIndicator: true,
         selectable: true,
         editable: false,
-        events: []
+        events: [],
+        eventContent: function(arg) {
+          const wrapper = document.createElement('div');
+
+          const titleEl = document.createElement('div');
+          titleEl.innerText = arg.event.title;
+          wrapper.appendChild(titleEl);
+
+          const code = arg.event.extendedProps.companyCode;
+          if (code) {
+            const tagEl = document.createElement('span');
+            tagEl.innerText = code;
+            tagEl.style.backgroundColor = "#6c757d";
+            tagEl.style.color = "white";
+            tagEl.style.fontSize = "10px";
+            tagEl.style.borderRadius = "4px";
+            tagEl.style.padding = "1px 4px";
+            tagEl.style.marginLeft = "4px";
+            tagEl.style.display = "inline-block";
+            wrapper.appendChild(tagEl);
+          }
+
+          return { domNodes: [wrapper] };
+        }
       });
       calendar.render();
-
       loadMeetingRooms();
     });
 
