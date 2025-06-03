@@ -88,6 +88,13 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Color mapping for rooms
+    const roomColorMap = {
+      "Training Area": "#007bff",
+      "Living Room": "#28a745",
+      "York Room": "#ffc107",
+    };
+
     let currentRoom = '';
     let calendar;
 
@@ -126,33 +133,32 @@
       });
 
     async function getRoomEvents(room) {
-        let query = db.collection("roomevents").orderBy("start");
+      let query = db.collection("roomevents").orderBy("start");
+      if (room !== "ALL") {
+        query = query.where("roomName", "==", room);
+      }
 
-        if (room !== "ALL") {
-            query = query.where("roomName", "==", room);
-        }
+      const snapshot = await query.get();
+      const events = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          title: room === "ALL" ? `[${data.roomName}] ${data.title}` : data.title,
+          start: data.start.toDate(),
+          end: data.end.toDate(),
+          color: roomColorMap[data.roomName] || "#999"
+        };
+      });
 
-        const snapshot = await query.get();
-        const events = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return {
-            title: `[${data.roomName}] ${data.title}`,
-            start: data.start.toDate(),
-            end: data.end.toDate()
-            };
-        });
-
-        console.log(`Loaded events for ${room}`, events);
-        return events;
-        }
-
+      console.log(`Loaded events for ${room}`, events);
+      return events;
+    }
 
     async function selectRoom(roomName) {
       currentRoom = roomName;
 
       const buttons = document.querySelectorAll('.list-group-item');
       buttons.forEach(btn => btn.classList.remove('active'));
-      const activeBtn = Array.from(buttons).find(btn => btn.textContent === roomName);
+      const activeBtn = Array.from(buttons).find(btn => btn.textContent.includes(roomName));
       if (activeBtn) activeBtn.classList.add('active');
 
       const events = await getRoomEvents(roomName);
@@ -161,35 +167,34 @@
     }
 
     function loadMeetingRooms() {
-        const roomButtonsContainer = document.getElementById('room-buttons');
-        db.collection("meetingroomlist").orderBy("displayorder").get().then(async snapshot => {
-            roomButtonsContainer.innerHTML = '';
+      const roomButtonsContainer = document.getElementById('room-buttons');
+      db.collection("meetingroomlist").orderBy("displayorder").get().then(async snapshot => {
+        roomButtonsContainer.innerHTML = '';
 
-            // Add "ALL" button
-            const allBtn = document.createElement("button");
-            allBtn.className = "list-group-item list-group-item-action active";
-            allBtn.textContent = "ALL";
-            allBtn.onclick = () => selectRoom("ALL");
-            roomButtonsContainer.appendChild(allBtn);
+        // Add "ALL" button
+        const allBtn = document.createElement("button");
+        allBtn.className = "list-group-item list-group-item-action active";
+        allBtn.textContent = "ALL";
+        allBtn.onclick = () => selectRoom("ALL");
+        roomButtonsContainer.appendChild(allBtn);
 
-            currentRoom = "ALL";
+        currentRoom = "ALL";
 
-            snapshot.forEach(doc => {
-            const roomName = doc.data().name;
-            const btn = document.createElement("button");
-            btn.className = "list-group-item list-group-item-action";
-            btn.textContent = roomName;
-            btn.onclick = () => selectRoom(roomName);
-            roomButtonsContainer.appendChild(btn);
-            });
-
-            if (calendar) {
-            await selectRoom("ALL");
-            }
+        snapshot.forEach(doc => {
+          const roomName = doc.data().name;
+          const color = roomColorMap[roomName] || "#999";
+          const btn = document.createElement("button");
+          btn.className = "list-group-item list-group-item-action";
+          btn.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background-color:${color};margin-right:8px;"></span>${roomName}`;
+          btn.onclick = () => selectRoom(roomName);
+          roomButtonsContainer.appendChild(btn);
         });
+
+        if (calendar) {
+          await selectRoom("ALL");
         }
-
-
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', async function () {
       const calendarEl = document.getElementById('calendar');
@@ -204,7 +209,7 @@
         nowIndicator: true,
         selectable: true,
         editable: false,
-        events: []  // Set empty initially, load dynamically after room is set
+        events: []
       });
       calendar.render();
 
