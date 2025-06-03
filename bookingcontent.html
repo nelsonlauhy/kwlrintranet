@@ -1,48 +1,100 @@
-<h2 class="mb-3">Meeting Room Booking</h2>
-
-<div class="alert alert-info">
-  Select a date and time slot to reserve a meeting room.
-</div>
-
-<!-- Placeholder for booking system (e.g., calendar or form) -->
-<div class="card mb-4">
-  <div class="card-body">
-    <form>
-      <div class="mb-3 row">
-        <label for="room" class="col-sm-2 col-form-label">Room</label>
-        <div class="col-sm-10">
-          <select class="form-select" id="room">
-            <option selected disabled>Choose...</option>
-            <option>Room A</option>
-            <option>Room B</option>
-            <option>Room C</option>
-          </select>
-        </div>
+<!-- Booking Content -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 col-lg-2 sidebar">
+      <h5 class="px-3">Meeting Rooms</h5>
+      <div class="list-group list-group-flush">
+        <button class="list-group-item list-group-item-action active" onclick="selectRoom('Training Area')">Training Area</button>
+        <button class="list-group-item list-group-item-action" onclick="selectRoom('Living Room')">Living Room</button>
+        <button class="list-group-item list-group-item-action" onclick="selectRoom('York Room')">York Room</button>
       </div>
+    </div>
 
-      <div class="mb-3 row">
-        <label for="date" class="col-sm-2 col-form-label">Date</label>
-        <div class="col-sm-4">
-          <input type="date" class="form-control" id="date">
-        </div>
-
-        <label for="time" class="col-sm-2 col-form-label">Time</label>
-        <div class="col-sm-4">
-          <input type="time" class="form-control" id="time">
-        </div>
-      </div>
-
-      <div class="mb-3 row">
-        <label for="notes" class="col-sm-2 col-form-label">Notes</label>
-        <div class="col-sm-10">
-          <textarea class="form-control" id="notes" rows="2" placeholder="Optional..."></textarea>
-        </div>
-      </div>
-
-      <div class="text-end">
-        <button type="submit" class="btn btn-primary">Book Room</button>
-      </div>
-    </form>
+    <!-- Calendar -->
+    <div class="col-md-9 col-lg-10 calendar-container">
+      <div id="calendar"></div>
+    </div>
   </div>
 </div>
+
+<!-- FullCalendar -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<!-- Booking Script -->
+<script>
+  let currentRoom = 'Training Area';
+
+  const userData = JSON.parse(sessionStorage.getItem("user"));
+  const [firstName = '', lastName = ''] = (userData.name || userData.username).split(' ');
+  const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+  const email = userData.username || "";
+
+  let companyName = "";
+  if (email.endsWith("livingrealtykw.com")) {
+    companyName = "KW Living Realty";
+  } else if (email.endsWith("livinggroupinc.com")) {
+    companyName = "Living Realty";
+  } else if (email.endsWith("livingproperties.com")) {
+    companyName = "Living Properties";
+  }
+
+  // Initialize FullCalendar
+  let calendar;
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'timeGridWeek',
+      height: "auto",
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      nowIndicator: true,
+      selectable: true,
+      editable: false,
+      events: getRoomEvents(currentRoom)
+    });
+    calendar.render();
+  });
+
+  function getRoomEvents(room) {
+    // Placeholder: Replace with actual data source
+    return [
+      {
+        title: 'Sample Booking',
+        start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+        end: new Date().toISOString().split('T')[0] + 'T11:00:00'
+      }
+    ];
+  }
+
+  function selectRoom(roomName) {
+    currentRoom = roomName;
+    const buttons = document.querySelectorAll('.list-group-item');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    const activeBtn = Array.from(buttons).find(btn => btn.textContent === roomName);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    calendar.removeAllEvents();
+    calendar.addEventSource(getRoomEvents(roomName));
+  }
+</script>
+
+<!-- Inline style (copied from booking.html) -->
+<style>
+  .sidebar {
+    min-height: 100vh;
+    background-color: #fff;
+    border-right: 1px solid #dee2e6;
+    padding-top: 1rem;
+  }
+  .sidebar .list-group-item {
+    cursor: pointer;
+  }
+  .calendar-container {
+    padding: 1rem;
+  }
+</style>
 
