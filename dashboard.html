@@ -39,6 +39,17 @@
     const userData = JSON.parse(sessionStorage.getItem("user"));
     const [firstName = '', lastName = ''] = (userData.name || userData.username).split(' ');
     const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+    const email = userData.username || "";
+
+    // Determine company based on email domain
+    let companyName = "";
+    if (email.endsWith("livingrealtykw.com")) {
+      companyName = "KW Living Realty";
+    } else if (email.endsWith("livinggroupinc.com")) {
+      companyName = "Living Realty";
+    } else if (email.endsWith("livingproperties.com")) {
+      companyName = "Living Properties";
+    }
 
     // Load navbar
     fetch('navbar.html')
@@ -56,8 +67,9 @@
         document.getElementById('profile-modal-container').innerHTML = html;
         document.getElementById("profileFirstName").textContent = firstName;
         document.getElementById("profileLastName").textContent = lastName;
-        document.getElementById("profileEmail").textContent = userData.username || "";
+        document.getElementById("profileEmail").textContent = email;
         document.getElementById("profileJobTitle").textContent = sessionStorage.getItem("jobTitle") || "—";
+        document.getElementById("profileCompany").textContent = companyName;
         document.getElementById("modalInitials").textContent = initials;
       });
   </script>
