@@ -218,16 +218,18 @@
             const wrapper = document.createElement('div');
             wrapper.style.display = "flex";
             wrapper.style.alignItems = "center";
+            wrapper.style.overflow = "hidden";
 
-            // Format time (e.g., 10:00 AM)
             const timeStr = arg.timeText ? `${arg.timeText} ` : "";
+            const titleText = arg.event.title.length > 25
+                ? arg.event.title.substring(0, 24) + "…"
+                : arg.event.title;
 
-            // Main text
             const textEl = document.createElement('span');
-            textEl.innerText = timeStr + arg.event.title;
+            textEl.innerText = timeStr + titleText;
+            textEl.title = arg.event.title; // show full title on hover
             wrapper.appendChild(textEl);
 
-            // Tag
             const code = arg.event.extendedProps.companyCode;
             if (code) {
                 const tagEl = document.createElement('span');
@@ -237,13 +239,14 @@
                 tagEl.style.fontSize = "10px";
                 tagEl.style.borderRadius = "4px";
                 tagEl.style.padding = "1px 4px";
-                tagEl.style.marginLeft = "6px";
+                tagEl.style.marginLeft = "4px";
                 tagEl.style.display = "inline-block";
                 wrapper.appendChild(tagEl);
             }
 
             return { domNodes: [wrapper] };
-            }
+        }
+
 
       });
       calendar.render();
