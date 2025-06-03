@@ -21,6 +21,14 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f8f9fa;
     }
+    body.fade-out {
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+    body {
+        opacity: 1;
+        transition: opacity 0.3s ease-in;
+    }
     .sidebar {
       min-height: 100vh;
       background-color: #fff;
@@ -141,6 +149,21 @@
       calendar.removeAllEvents();
       calendar.addEventSource(getRoomEvents(roomName));
     }
+
+    // Add transition when navigating to another page
+    document.querySelectorAll('a.nav-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        // Skip anchor-only links
+        if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+            e.preventDefault();
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+            window.location.href = href;
+            }, 300); // must match transition time
+        }
+        });
+    });
   </script>
 </body>
 </html>
