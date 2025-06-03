@@ -218,43 +218,47 @@
             const wrapper = document.createElement('div');
             wrapper.style.display = "flex";
             wrapper.style.alignItems = "center";
+            wrapper.style.justifyContent = "flex-start";
+            wrapper.style.whiteSpace = "nowrap";
             wrapper.style.overflow = "hidden";
+            wrapper.style.textOverflow = "ellipsis";
 
-            // Colored dot (manual version of event color)
+            // Always show color dot
             const dot = document.createElement('span');
             dot.style.display = 'inline-block';
             dot.style.width = '8px';
             dot.style.height = '8px';
             dot.style.borderRadius = '50%';
             dot.style.marginRight = '4px';
-            dot.style.marginTop = '2px';
             dot.style.backgroundColor = arg.event.backgroundColor || arg.event.color || "#999";
             wrapper.appendChild(dot);
 
-            // Time + Title
+            // Time + title
             const timeStr = arg.timeText ? `${arg.timeText} ` : "";
-            const titleText = arg.event.title.length > 25
-                ? arg.event.title.substring(0, 24) + "…"
-                : arg.event.title;
+            const fullTitle = timeStr + arg.event.title;
 
-            const textEl = document.createElement('span');
-            textEl.innerText = timeStr + titleText;
-            textEl.title = arg.event.title;
-            wrapper.appendChild(textEl);
+            const titleEl = document.createElement('span');
+            titleEl.textContent = fullTitle;
+            titleEl.style.flexGrow = "1";
+            titleEl.style.overflow = "hidden";
+            titleEl.style.textOverflow = "ellipsis";
+            titleEl.style.whiteSpace = "nowrap";
+            titleEl.title = fullTitle;  // Tooltip
+            wrapper.appendChild(titleEl);
 
             // Company code tag
             const code = arg.event.extendedProps.companyCode;
             if (code) {
-                const tagEl = document.createElement('span');
-                tagEl.innerText = code;
-                tagEl.style.backgroundColor = "#6c757d";
-                tagEl.style.color = "white";
-                tagEl.style.fontSize = "10px";
-                tagEl.style.borderRadius = "4px";
-                tagEl.style.padding = "1px 4px";
-                tagEl.style.marginLeft = "4px";
-                tagEl.style.display = "inline-block";
-                wrapper.appendChild(tagEl);
+                const tag = document.createElement('span');
+                tag.innerText = code;
+                tag.style.backgroundColor = "#6c757d";
+                tag.style.color = "white";
+                tag.style.fontSize = "10px";
+                tag.style.borderRadius = "4px";
+                tag.style.padding = "1px 4px";
+                tag.style.marginLeft = "6px";
+                tag.style.flexShrink = "0";
+                wrapper.appendChild(tag);
             }
 
             return { domNodes: [wrapper] };
