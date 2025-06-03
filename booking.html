@@ -148,16 +148,17 @@
       return snapshot.docs.map(doc => {
         const data = doc.data();
         return {
-          title: room === "ALL" ? `[${data.roomName}] ${data.title}` : data.title,
-          start: data.start.toDate(),
-          end: data.end.toDate(),
-          color: roomColorMap[data.roomName] || "#999",
-          extendedProps: {
+            title: data.title,  // ⬅️ No more [Room Name]
+            start: data.start.toDate(),
+            end: data.end.toDate(),
+            color: roomColorMap[data.roomName] || "#999",
+            extendedProps: {
+            roomName: data.roomName || "",
             companyCode: data.companyCode || "",
             eventDescription: data.eventDescription || ""
-          }
+            }
         };
-      });
+        });
     }
 
     async function selectRoom(roomName) {
