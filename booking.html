@@ -126,23 +126,26 @@
       });
 
     async function getRoomEvents(room) {
-        const snapshot = await db.collection("roomevents")
-            .where("roomName", "==", room)
-            .orderBy("start")
-            .get();
+        let query = db.collection("roomevents").orderBy("start");
 
+        if (room !== "ALL") {
+            query = query.where("roomName", "==", room);
+        }
+
+        const snapshot = await query.get();
         const events = snapshot.docs.map(doc => {
             const data = doc.data();
             return {
-            title: data.title,
+            title: `[${data.roomName}] ${data.title}`,
             start: data.start.toDate(),
             end: data.end.toDate()
             };
         });
 
-        console.log("Loaded events for", room, events);  // <-- Add this
+        console.log(`Loaded events for ${room}`, events);
         return events;
         }
+
 
     async function selectRoom(roomName) {
       currentRoom = roomName;
@@ -162,24 +165,30 @@
         db.collection("meetingroomlist").orderBy("displayorder").get().then(async snapshot => {
             roomButtonsContainer.innerHTML = '';
 
-            let firstRoom = null;
+            // Add "ALL" button
+            const allBtn = document.createElement("button");
+            allBtn.className = "list-group-item list-group-item-action active";
+            allBtn.textContent = "ALL";
+            allBtn.onclick = () => selectRoom("ALL");
+            roomButtonsContainer.appendChild(allBtn);
 
-            snapshot.forEach((doc, index) => {
+            currentRoom = "ALL";
+
+            snapshot.forEach(doc => {
             const roomName = doc.data().name;
             const btn = document.createElement("button");
             btn.className = "list-group-item list-group-item-action";
             btn.textContent = roomName;
             btn.onclick = () => selectRoom(roomName);
             roomButtonsContainer.appendChild(btn);
-
-            if (index === 0) firstRoom = roomName;
             });
 
-            if (firstRoom && calendar) {
-            await selectRoom(firstRoom);
+            if (calendar) {
+            await selectRoom("ALL");
             }
         });
-    }
+        }
+
 
 
     document.addEventListener('DOMContentLoaded', async function () {
