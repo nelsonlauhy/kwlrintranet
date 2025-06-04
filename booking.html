@@ -332,11 +332,15 @@
         eventClick: function(info) {
           const event = info.event;
 
-          // Fill modal with current values
-          document.getElementById('modalEventId').value = event.id; // Firestore doc ID
+          // Apply local-adjusted ISO format
+          const formatDateTimeLocal = date =>
+            new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+              .toISOString().slice(0, 16);
+
+          document.getElementById('modalEventId').value = event.id;
           document.getElementById('modalEventTitle').value = event.title;
-          document.getElementById('modalEventStart').value = event.start.toISOString().slice(0, 16);
-          document.getElementById('modalEventEnd').value = event.end.toISOString().slice(0, 16);
+          document.getElementById('modalEventStart').value = formatDateTimeLocal(event.start);
+          document.getElementById('modalEventEnd').value = formatDateTimeLocal(event.end);
           document.getElementById('modalEventRoom').value = event.extendedProps.roomName || "";
           document.getElementById('modalEventCompany').value = event.extendedProps.companyCode || "";
           document.getElementById('modalEventDesc').value = event.extendedProps.eventDescription || "";
@@ -344,7 +348,6 @@
           const modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
           modal.show();
         }
-
 
       });
       calendar.render();
