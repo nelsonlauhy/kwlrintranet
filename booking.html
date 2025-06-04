@@ -20,42 +20,8 @@
   <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
   <script src="msalconfig.js"></script>
 
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      opacity: 1;
-      transition: opacity 0.3s ease-in;
-    }
-    body.fade-out {
-      opacity: 0;
-      transition: opacity 0.3s ease-out;
-    }
-    .sidebar {
-      min-height: 100vh;
-      background-color: #fff;
-      border-right: 1px solid #dee2e6;
-      padding-top: 1rem;
-    }
-    .sidebar .list-group-item {
-      cursor: pointer;
-    }
-    .calendar-container {
-      padding: 1rem;
-    }
+  <link rel="stylesheet" href="booking.css">
 
-    /* Calendar color overrides */
-    .fc .fc-toolbar-title,
-    .fc .fc-col-header-cell-cushion,
-    .fc-daygrid-day-number,
-    .fc-daygrid-event .fc-event-title {
-      color: #343a40 !important;
-    }
-
-    .fc-event-title a {
-      text-decoration: none !important;
-    }
-  </style>
 </head>
 <body>
 
@@ -79,71 +45,7 @@
     </div>
   </div>
   <!-- Event Detail Modal (Editable) -->
-  <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eventDetailLabel">Edit Event</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="eventEditForm">
-            <input type="hidden" id="modalEventId" />
-
-            <div class="mb-2">
-              <label class="form-label">Title</label>
-              <input type="text" class="form-control" id="modalEventTitle" required />
-            </div>
-
-            <div class="row mb-2">
-              <div class="col">
-                <label class="form-label">Start Time</label>
-                <input type="datetime-local" class="form-control" id="modalEventStart" required />
-              </div>
-              <div class="col">
-                <label class="form-label">End Time</label>
-                <input type="datetime-local" class="form-control" id="modalEventEnd" required />
-              </div>
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label">Room</label>
-              <select class="form-select" id="modalEventRoom" required>
-                <option value="Training Room">Training Room</option>
-                <option value="Living Room">Living Room</option>
-                <option value="York Room">York Room</option>
-              </select>
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label">Company Code</label>
-              <select class="form-select" id="modalEventCompany" required>
-                <option value="KW">KW</option>
-                <option value="LRI">LRI</option>
-                <option value="ICI">ICI</option>
-                <option value="LPI">LPI</option>
-                <option value="IMHG">IMHG</option>
-                <option value="OR">OR</option>
-              </select>
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" id="modalEventDesc" rows="5"></textarea>
-            </div>
-          </form>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger me-auto" id="deleteEventBtn">Delete</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveEventBtn">Save Changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div id="modalContainer"></div>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -389,5 +291,12 @@
   </script>
   <script src="booking_save.js"></script>
   <script src="booking_delete.js"></script>
+  <script>
+    fetch('eventDetailModal.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('modalContainer').innerHTML = html;
+      });
+  </script>
 </body>
 </html>
