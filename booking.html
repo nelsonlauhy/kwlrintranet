@@ -223,7 +223,7 @@
             roomName: data.roomName || "",
             companyCode: data.companyCode || "",
             eventDescription: data.eventDescription || "",
-            createByEmail: data.createByEmail || ""
+            createdByEmail: data.createdByEmail || ""
           }
         };
         });
@@ -348,7 +348,7 @@
           document.getElementById('modalEventDesc').value = event.extendedProps.eventDescription || "";
 
           // 🔐 Permission check based on email
-          const creatorEmail = event.extendedProps.createByEmail || "";
+          const creatorEmail = event.extendedProps.createdByEmail || "";
           const isEditable = (email === creatorEmail);
 
           // 🔧 Toggle input fields
