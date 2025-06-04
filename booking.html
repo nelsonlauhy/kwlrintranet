@@ -222,7 +222,8 @@
           extendedProps: {
             roomName: data.roomName || "",
             companyCode: data.companyCode || "",
-            eventDescription: data.eventDescription || ""
+            eventDescription: data.eventDescription || "",
+            createByEmail: data.createByEmail || ""
           }
         };
         });
@@ -334,7 +335,6 @@
         eventClick: function(info) {
           const event = info.event;
 
-          // Apply local-adjusted ISO format
           const formatDateTimeLocal = date =>
             new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
               .toISOString().slice(0, 16);
@@ -347,9 +347,26 @@
           document.getElementById('modalEventCompany').value = event.extendedProps.companyCode || "";
           document.getElementById('modalEventDesc').value = event.extendedProps.eventDescription || "";
 
+          // 🔐 Permission check based on email
+          const creatorEmail = event.extendedProps.createByEmail || "";
+          const isEditable = (email === creatorEmail);
+
+          // 🔧 Toggle input fields
+          document.getElementById('modalEventTitle').readOnly = !isEditable;
+          document.getElementById('modalEventStart').disabled = !isEditable;
+          document.getElementById('modalEventEnd').disabled = !isEditable;
+          document.getElementById('modalEventRoom').disabled = !isEditable;
+          document.getElementById('modalEventCompany').disabled = !isEditable;
+          document.getElementById('modalEventDesc').readOnly = !isEditable;
+
+          // 🔧 Toggle buttons
+          document.getElementById('saveEventBtn').style.display = isEditable ? 'inline-block' : 'none';
+          document.getElementById('deleteEventBtn').style.display = isEditable ? 'inline-block' : 'none';
+
           const modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
           modal.show();
         }
+
 
       });
       calendar.render();
