@@ -89,32 +89,50 @@
         <div class="modal-body">
           <form id="eventEditForm">
             <input type="hidden" id="modalEventId" />
+
             <div class="mb-2">
               <label class="form-label">Title</label>
               <input type="text" class="form-control" id="modalEventTitle" required />
             </div>
+
             <div class="mb-2">
               <label class="form-label">Start Time</label>
               <input type="datetime-local" class="form-control" id="modalEventStart" required />
             </div>
+
             <div class="mb-2">
               <label class="form-label">End Time</label>
               <input type="datetime-local" class="form-control" id="modalEventEnd" required />
             </div>
+
             <div class="mb-2">
               <label class="form-label">Room</label>
-              <input type="text" class="form-control" id="modalEventRoom" readonly />
+              <select class="form-select" id="modalEventRoom" required>
+                <option value="Training Area">Training Area</option>
+                <option value="Living Room">Living Room</option>
+                <option value="York Room">York Room</option>
+              </select>
             </div>
+
             <div class="mb-2">
               <label class="form-label">Company Code</label>
-              <input type="text" class="form-control" id="modalEventCompany" />
+              <select class="form-select" id="modalEventCompany" required>
+                <option value="KW">KW</option>
+                <option value="LRI">LRI</option>
+                <option value="ICI">ICI</option>
+                <option value="LPI">LPI</option>
+                <option value="IMHG">IMHG</option>
+                <option value="OR">OR</option>
+              </select>
             </div>
+
             <div class="mb-2">
               <label class="form-label">Description</label>
-              <textarea class="form-control" id="modalEventDesc" rows="2"></textarea>
+              <textarea class="form-control" id="modalEventDesc" rows="5"></textarea>
             </div>
           </form>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="saveEventBtn">Save Changes</button>
@@ -122,6 +140,7 @@
       </div>
     </div>
   </div>
+
 
 
   <!-- Bootstrap JS -->
@@ -141,7 +160,7 @@
     const db = firebase.firestore();
 
     const roomColorMap = {
-      "Training Area": "#007bff",
+      "Training Room": "#007bff",
       "Living Room": "#28a745",
       "York Room": "#ffc107",
     };
