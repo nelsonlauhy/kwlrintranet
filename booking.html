@@ -173,7 +173,8 @@
     const userData = JSON.parse(sessionStorage.getItem("user"));
     const [firstName = '', lastName = ''] = (userData.name || userData.username).split(' ');
     const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-    const email = userData.username || "";
+    
+    const email = userData.mail || userData.userPrincipalName || userData.username || "";
 
     let companyName = "";
     if (email.endsWith("livingrealtykw.com")) {
